@@ -159,7 +159,7 @@ var arrayGrid = [
 
 const lvSettings = {
     1: {
-        levelName: "Grid Shot Normal Mode",
+        levelName: "Grid Shot Normal",
         numBalls: 6,
         isBallMovement: false,
         maxTime: 90,
@@ -167,11 +167,11 @@ const lvSettings = {
         requestScore: 30000,
         hitScore: 185,
         ballSize : 80,
-        ballColor : 'aqua',
+        ballColor : 'yellow',
         background : 'grey'
     },
     2:  {
-        levelName: "Grid Shot Hard Mode",
+        levelName: "Grid Shot Hard",
         numBalls: 6,
         isBallMovement: false,
         maxTime: 90,
@@ -179,11 +179,11 @@ const lvSettings = {
         requestScore: 30000,
         hitScore: 185,
         ballSize : 40,
-        ballColor : 'aqua',
+        ballColor : 'yellow',
         background : 'grey'
     },
     3:  {
-        levelName: "Grid Shot Normal Mode",
+        levelName: "Grid Shot God Like",
         numBalls: 6,
         isBallMovement: false,
         maxTime: 121,
@@ -191,7 +191,7 @@ const lvSettings = {
         requestScore: 50000,
         hitScore: 185,
         ballSize : 40,
-        ballColor : 'aqua',
+        ballColor : 'yellow',
         background : 'grey'
     }
 }
