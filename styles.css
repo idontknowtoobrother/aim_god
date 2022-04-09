@@ -40,7 +40,8 @@ button:hover {
 .ball {
     position: absolute;
     border-radius: 100%;
-    opacity: 0.9;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    opacity: 0.95;
 }
 
 #area_ball{
@@ -50,4 +51,33 @@ button:hover {
    height: 600px;
    background: white;
    overflow: hidden;
+}
+
+#score {
+    position: absolute;
+    top: -5%;
+    padding-left: 9px;
+    padding-right: 9px;
+    background-color: rgba(0, 176, 0, 0.623);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    font-size: 20px;
+}
+
+#restart-btn {
+    position: absolute;
+    top: 101%;
+    background-color: rgba(77, 77, 77, 0.623);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    font-size: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    transition: .2s;
+}
+
+
+#restart-btn:hover{
+    opacity: .95;
+    transform: scale(105%);
+    transition: .2s;
 }

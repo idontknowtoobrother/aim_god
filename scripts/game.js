@@ -1,15 +1,30 @@
 
-var balls = []
+var player = {
+    lv: 0,
+    score: 0,
+    hitted: false,
+    missTotal: 0,
+    balls: []
+}
+
 const lvSettings = {
     1: {
-        numBalls: 9,
-        ballColor : 'blue',
+        numBalls: 6,
+        maxTime: 90,
+        missScore: 120,
+        hitScore: 150,
+        ballSize : 80,
+        ballColor : 'aqua',
         background : 'white'
     }
 }
 
 function randomInt(length){
     return Math.floor(Math.random() * length)
+}
+
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
 }
 
 function changeBackGroundLv(lv) {
@@ -21,40 +36,136 @@ function changeBackGroundLv(lv) {
 	}
 }
 
+function randonPositionBall(){
+    var isSuccess = true
+    var position
 
-function randomSpawnTarget(window, lv){
-
-    const config = lvSettings[lv]
-    changeBackGroundLv(config.background)
-
-
-    
-    // Some random colors
-    const colors = ["#3CC157", "#2AA7FF", "#1B1B1B", "#FCBC0F", "#F85F36"];
-
-
-    for (let i = 0; i < config.numBalls; i++) {
-        let ball = document.createElement("div");
-        ball.classList.add("ball");
-        ball.style.background = config.ballColor;
-        ball.style.left = `${randomInt(100)}vw`;
-        ball.style.top = `${randomInt(100)}vh`;
-        ball.style.transform = `scale(${Math.random()})`;
-        ball.style.width = `${Math.random()}em`;
-        ball.style.height = ball.style.width;
-        
-
-        balls.push(ball);
-        document.getElementById("area_ball").append(ball);
+    if(player.balls.length < 1){
+        return {
+            left: randomInt(70),
+            top: randomInt(70)
+        }
     }
 
+    do{
+        position = {
+            left: randomInt(70),
+            top: randomInt(70)
+        }
+
+        player.balls.forEach(ball => {
+            if(
+                position.left == ball.style.left && position.top == ball.style.top
+            ){
+                isSuccess == false
+                return
+            }
+        })
+
+    }while(!isSuccess)
+
+    return position
 }
 
-function startAim(){ // เริ่มเกม
+function refreshScore(){
+    var scoreLabel = document.getElementById('score')
+    scoreLabel.innerHTML = `Level: <span style="color: red">${player.lv}</span> Score: <span style="color: gold">${player.score}</span>`
+}
+
+function missShot(config){
+    if(player.hitted){
+        player.hitted = false
+        return
+    }
+    player.score = player.score - config.missScore < 1 ? 0 : player.score - config.missScore
+    player.missTotal++
+    refreshScore()
+}
+
+function hitShot(config, ball){
+    player.hitted = true
+    player.score += config.hitScore
+    
+
+    const ballIndex = player.balls.indexOf(ball)
+    if(ballIndex > -1){
+        player.balls.splice(ballIndex, 1)
+    }
+    ball.style.background = 'red';
+    setTimeout(function(){
+        ball.remove()
+    }, 30)
+    addNewBall(config)
+    refreshScore()
+    
+}
+
+function addNewBall(config){
+    const areaBall = document.getElementById("area_ball")
+    let ball = document.createElement("div")
+    ball.classList.add("ball");
+    ball.style.background = config.ballColor
+
+    const positionBall = randonPositionBall(config.ballSize)
+
+    ball.style.left = `${positionBall.left}%`
+    ball.style.top = `${positionBall.top}%`
+    
+    ball.style.width = `${config.ballSize}px`
+    ball.style.height = ball.style.width
+    
+    ball.addEventListener('click', () => {
+        hitShot(config, ball)
+    })
+
+    player.balls.push(ball)
+    areaBall.append(ball)
+}
+
+function randomSpawnTarget(lv){
+
+    const areaBall = document.getElementById("area_ball")
+    const config = lvSettings[lv]
+
+
+    areaBall.addEventListener('click', ()=>{
+        missShot(config)
+    })
+
+    changeBackGroundLv(config.background)
+
+    for (let i = 0; i < config.numBalls; i++) {
+        addNewBall(config)
+    }
+
+    let o = 1
+    player.balls.forEach(ball => {
+        console.log(`Ball (${o})\n   top: ${ball.style.top} | left: ${ball.style.left}}`);
+        o++
+    })
+}
+
+function resetPlayer(){
+    player.score = 0
+    player.hitted = false
+    player.balls = []
+}
+
+function startAim(lv){ // เริ่มเกม
     var window = document.getElementsByClassName('main-container')[0]
+    player.lv = lv
+
+    document.getElementById
     window.innerHTML = `
         <div id="area_ball"></div>
+        <div id="score">Level: <span style="color: red">${player.lv}</span> Score: <span style="color: gold">${player.score}</span></div>
+        <div id="restart-btn"> Restart </div>
     `
-    randomSpawnTarget(window, 1)
+
+    document.getElementById('restart-btn').addEventListener('click', function(){
+        resetPlayer()
+        startAim(player.lv)
+    })
+    randomSpawnTarget(player.lv)
 }
 
