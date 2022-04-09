@@ -1,4 +1,4 @@
-
+var timeCounter
 var player = {
     lv: 0,
     score: 0,
@@ -9,13 +9,16 @@ var player = {
 
 const lvSettings = {
     1: {
+        levelName: "Grid Shot Normal Mode",
         numBalls: 6,
-        maxTime: 90,
+        isBallMovement: false,
+        maxTime: 3,
         missScore: 120,
-        hitScore: 150,
+        requestScore: 10,
+        hitScore: 173,
         ballSize : 80,
         ballColor : 'aqua',
-        background : 'white'
+        background : 'grey'
     }
 }
 
@@ -34,6 +37,35 @@ function changeBackGroundLv(lv) {
         elements[i].style.background = 'none';
 		elements[i].style.backgroundColor = colorLv;
 	}
+}
+
+function startTimer(config, display) {
+    var timer = config.maxTime, minutes, seconds;
+    minutes = parseInt(timer / 60, 10);
+    seconds = parseInt(timer % 60, 10);
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    display.innerHTML = `Time: <span style color="black"> ${minutes}:${seconds} </span>`;
+
+    
+    timeCounter = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.innerHTML = `Time: <span style color="black"> ${minutes}:${seconds} </span>`;
+
+        if (--timer < 0) {
+            if(player.score < config.requestScore){
+                failedPage(config)
+                return
+            }
+            successPage(config)
+            return
+        }
+    }, 1000);
 }
 
 function randonPositionBall(){
@@ -125,6 +157,7 @@ function addNewBall(config){
 function randomSpawnTarget(lv){
 
     const areaBall = document.getElementById("area_ball")
+    const timeLabel = document.getElementById("timecount")
     const config = lvSettings[lv]
 
 
@@ -138,11 +171,7 @@ function randomSpawnTarget(lv){
         addNewBall(config)
     }
 
-    let o = 1
-    player.balls.forEach(ball => {
-        console.log(`Ball (${o})\n   top: ${ball.style.top} | left: ${ball.style.left}}`);
-        o++
-    })
+    startTimer(config, timeLabel)
 }
 
 function resetPlayer(){
@@ -155,10 +184,10 @@ function startAim(lv){ // เริ่มเกม
     var window = document.getElementsByClassName('main-container')[0]
     player.lv = lv
 
-    document.getElementById
     window.innerHTML = `
         <div id="area_ball"></div>
         <div id="score">Level: <span style="color: red">${player.lv}</span> Score: <span style="color: gold">${player.score}</span></div>
+        <div id="timecount">Time: <span style color="black"> 00:00 </span></div>
         <div id="restart-btn"> Restart </div>
     `
 
@@ -169,3 +198,49 @@ function startAim(lv){ // เริ่มเกม
     randomSpawnTarget(player.lv)
 }
 
+function successPage(config){
+    clearInterval(timeCounter)
+
+    var window = document.getElementsByClassName('main-container')[0]
+    player.lv++;
+    window.innerHTML = `
+        <div id="area_ball">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <span style="font-size: 60px;">${config.levelName}</span><br>
+            <span style="font-size: 150px; color:greenyellow">Pass !</span><br>
+            <span style="font-size: 45px; color: gold">Score: ${player.score} <br> Miss: ${player.missTotal}</span>
+        </div>
+        <div id="restart-btn"> Next Level </div>
+    `
+    document.getElementById('restart-btn').addEventListener('click', function(){
+        resetPlayer()
+        startAim(player.lv)
+    })
+}
+
+function failedPage(config){
+    clearInterval(timeCounter)
+
+    var window = document.getElementsByClassName('main-container')[0]
+    window.innerHTML = `
+        <div id="area_ball">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <span style="font-size: 60px;">${config.levelName}</span><br>
+            <span style="font-size: 150px; color:red">Failed :(</span><br>
+            <span style="font-size: 45px; color: gold">Score: ${player.score} <br> Miss: ${player.missTotal}</span>
+        </div>
+        <div id="restart-btn"> Restart </div>
+    `
+    document.getElementById('restart-btn').addEventListener('click', function(){
+        resetPlayer()
+        startAim(player.lv)
+    })
+}

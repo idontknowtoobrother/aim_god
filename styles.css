@@ -49,7 +49,7 @@ button:hover {
    absolute;
    width: 800px;
    height: 600px;
-   background: white;
+   background: grey;
    overflow: hidden;
 }
 
@@ -75,6 +75,16 @@ button:hover {
     transition: .2s;
 }
 
+#timecount {
+    position: absolute;
+    top: -5%;
+    left: 84.5%;
+    padding-left: 9px;
+    padding-right: 9px;
+    background-color: rgba(255, 47, 102, 0.623);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    font-size: 20px;
+}
 
 #restart-btn:hover{
     opacity: .95;
